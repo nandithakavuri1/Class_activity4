@@ -40,7 +40,21 @@ class _HeartbeatAppState extends State<HeartbeatApp>
     _animation = Tween<double>(begin: 1.0, end: 1.3).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
     );
+     _startCountdown();
   }
+   void _startCountdown() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_countdown > 0) {
+          _countdown--;
+          _currentGreetingIndex = Random().nextInt(greetings.length);
+        } else {
+          _timer?.cancel();
+        }
+      });
+    });
+  }
+
 
   @override
   void dispose() {
@@ -74,6 +88,13 @@ class _HeartbeatAppState extends State<HeartbeatApp>
                     },
                   ),
                   SizedBox(height: 20),
+                   Text(
+                    _countdown != 0
+                        ? "$_countdown seconds remaining"
+                        : "Happy Valentine's Day!",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+
                   SizedBox(height: 20),
                   AnimatedOpacity(
                     opacity: _countdown % 2 == 0 ? 1.0 : 0.0,
